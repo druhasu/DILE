@@ -1,0 +1,6 @@
+[submodule "Plugins/UnrealDIRepo"]
+	path = Plugins/UnrealDIRepo
+	url = https://github.com/druhasu/UnrealDI.git
+[submodule "Plugins/UnrealMvvmRepo"]
+	path = Plugins/UnrealMvvmRepo
+	url = https://github.com/druhasu/UnrealMvvm.git
