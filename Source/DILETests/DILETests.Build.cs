@@ -8,6 +8,8 @@ public class DILETests : ModuleRules
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
+        PrivateIncludePaths.Add("DILETests");
+
         PublicDependencyModuleNames.AddRange(
             new[]
             {

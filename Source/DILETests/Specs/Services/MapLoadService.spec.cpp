@@ -2,7 +2,7 @@
 
 #include "Misc/AutomationTest.h"
 
-#include "DILE/Private/Services/MapLoadServiceImpl.h"
+#include "Services/MapLoadServiceImpl.h"
 
 #include "Commands/WaitWorldTravelLatentCommand.h"
 #include "Utils/TempWorldHelper.h"

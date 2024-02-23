@@ -8,7 +8,7 @@ public class DILE : ModuleRules
     {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-        PrivateIncludePaths.Add("");
+        PublicIncludePaths.Add("DILE");
 
         PublicDependencyModuleNames.AddRange(
             new[]
