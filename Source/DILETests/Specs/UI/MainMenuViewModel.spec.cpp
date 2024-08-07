@@ -2,7 +2,7 @@
 
 #include "Misc/AutomationTest.h"
 
-#include "UI/Screens/MainMenu/MainMenuViewModel.h"
+#include "Mechanics/MainMenu/UI/MainMenuViewModel.h"
 
 #include "Mocks/MapLoadServiceMock.h"
 

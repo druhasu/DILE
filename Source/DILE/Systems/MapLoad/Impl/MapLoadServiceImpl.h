@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Interfaces/Services/IMapLoadService.h"
+#include "Systems/MapLoad/IMapLoadService.h"
 #include "Core/DILESettings.h"
 #include "MapLoadServiceImpl.generated.h"
 

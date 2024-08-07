@@ -6,3 +6,7 @@
 /Saved
 /*.sln
 /.vsconfig
+
+/Plugins/**/Binaries
+/Plugins/**/Intermediate
+/Plugins/**/Saved

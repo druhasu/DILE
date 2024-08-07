@@ -15,6 +15,7 @@ public class DILEEditorTarget : TargetRules
             new []
             {
                 "DILE",
+                "DILEEditor",
                 "DILETests",
             }
         );

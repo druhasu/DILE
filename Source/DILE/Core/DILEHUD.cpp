@@ -1,6 +1,7 @@
 // Copyright Andrei Sudarikov. All Rights Reserved.
 
 #include "Core/DILEHUD.h"
+#include "Blueprint/UserWidget.h"
 
 void ADILEHUD::InitDependencies(TScriptInterface<IInjector>&& InInjector)
 {

@@ -3,7 +3,7 @@
 #include "Core/DILEGameInstance.h"
 #include "DI/ObjectContainerBuilder.h"
 
-#include "Services/MapLoadServiceImpl.h"
+#include "Systems/MapLoad/Impl/MapLoadServiceImpl.h"
 
 void UDILEGameInstance::ConfigureContainer(FObjectContainerBuilder& Builder)
 {

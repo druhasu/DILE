@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Interfaces/Services/IMapLoadService.h"
+#include "Systems/MapLoad/IMapLoadService.h"
 #include "MapLoadServiceMock.generated.h"
 
 UCLASS()

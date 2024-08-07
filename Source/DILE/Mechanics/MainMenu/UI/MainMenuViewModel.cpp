@@ -1,7 +1,7 @@
 // Copyright Andrei Sudarikov. All Rights Reserved.
 
-#include "UI/Screens/MainMenu/MainMenuViewModel.h"
-#include "Interfaces/Services/IMapLoadService.h"
+#include "MainMenuViewModel.h"
+#include "Systems/MapLoad/IMapLoadService.h"
 
 void UMainMenuViewModel::InitDependencies(TScriptInterface<IMapLoadService>&& InMapLoadService)
 {

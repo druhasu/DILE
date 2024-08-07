@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "UI/Common/DILEWidget.h"
+#include "Utils/Widgets/DILEWidget.h"
 #include "Mvvm/BaseView.h"
 #include "MainMenuViewModel.h"
 #include "MainMenuScreen.generated.h"

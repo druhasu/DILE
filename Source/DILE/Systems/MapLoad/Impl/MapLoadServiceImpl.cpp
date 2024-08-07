@@ -1,6 +1,6 @@
 // Copyright Andrei Sudarikov. All Rights Reserved.
 
-#include "Services/MapLoadServiceImpl.h"
+#include "MapLoadServiceImpl.h"
 #include "GameMapsSettings.h"
 #include "Kismet/GameplayStatics.h"
 
