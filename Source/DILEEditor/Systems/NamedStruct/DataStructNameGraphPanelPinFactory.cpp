@@ -6,7 +6,7 @@
 #include "SGraphPin.h"
 #include "ScopedTransaction.h"
 #include "EdGraphSchema_K2.h"
-#include "Systems/NamedStruct/NamedStructRegistry.h"
+#include "Systems/NamedStruct/Impl/NamedStructRegistry.h"
 
 class SNamedStructGraphPin : public SGraphPin
 {

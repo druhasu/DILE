@@ -2,7 +2,7 @@
 
 #include "DataStructNamePropertyCustomization.h"
 
-#include "Systems/NamedStruct/NamedStructRegistry.h"
+#include "Systems/NamedStruct/Impl/NamedStructRegistry.h"
 #include "DetailWidgetRow.h"
 #include "PropertyCustomizationHelpers.h"
 

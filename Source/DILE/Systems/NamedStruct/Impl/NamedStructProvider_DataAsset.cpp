@@ -2,7 +2,7 @@
 
 #include "NamedStructProvider_DataAsset.h"
 
-#include "NamedStructDataAsset.h"
+#include "Systems/NamedStruct/NamedStructDataAsset.h"
 
 void FNamedStructProvider_DataAsset::GetAssetsBaseClassPaths(TArray<FTopLevelAssetPath>& OutClassPaths) const
 {

@@ -2,7 +2,7 @@
 
 #include "Modules/ModuleManager.h"
 
-#include "Systems/NamedStruct/NamedStructRegistry.h"
+#include "Systems/NamedStruct/Impl/NamedStructRegistry.h"
 #include "Systems/NamedStruct/DataStructNamePropertyCustomization.h"
 #include "Systems/NamedStruct/DataStructNameGraphPanelPinFactory.h"
 

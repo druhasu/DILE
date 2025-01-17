@@ -14,11 +14,40 @@ FNamedStructRegistry& FNamedStructRegistry::Get()
     static TSharedRef<FNamedStructRegistry> Singleton = []()
     {
         TSharedRef<FNamedStructRegistry> Registry = MakeShared<FNamedStructRegistry>();
-        Registry->Startup();
+        FCoreDelegates::OnPostEngineInit.AddSP(Registry, &ThisClass::Startup);
         return Registry;
     }();
 
     return *Singleton;
+}
+
+void FNamedStructRegistry::Startup()
+{
+    Providers.Add(MakeShared<FNamedStructProvider_DataAsset>());
+    Providers.Add(MakeShared<FNamedStructProvider_DataTable>());
+
+    for (TSharedRef<INamedStructProvider>& Provider : Providers)
+    {
+        Provider->OnReloadRequested.AddSP(this, &ThisClass::ReloadAssets);
+    }
+
+    FModuleManager::Get().OnModulesChanged().AddSP(this, &ThisClass::OnModulesChanged);
+    ProcessPendingRegistrations();
+
+    FModuleManager::Get().LoadModuleChecked(TEXT("AssetRegistry"));
+    IAssetRegistry* AssetRegistry = IAssetRegistry::Get();
+
+    if (AssetRegistry->IsLoadingAssets())
+    {
+        AssetRegistry->OnFilesLoaded().AddSP(this, &ThisClass::StartAssetsLoading);
+    }
+    else
+    {
+        StartAssetsLoading();
+    }
+
+    AssetRegistry->OnAssetAdded().AddSP(this, &ThisClass::OnAssetAdded);
+    AssetRegistry->OnAssetRemoved().AddSP(this, &ThisClass::OnAssetRemoved);
 }
 
 uint8 FNamedStructRegistry::RegisterNamedStruct(FStructGetter NameStructGetter, FStructGetter DataStructGetter)
@@ -47,6 +76,28 @@ TArray<FName> FNamedStructRegistry::GetPossibleNames(UScriptStruct* NameStruct)
     }
 
     return Result;
+}
+
+const void* FNamedStructRegistry::GetValuePtr(UScriptStruct* NameStruct, FName Name)
+{
+    EnsureLoaded();
+
+    const FStructEntry* StructEntry = StructData.FindByPredicate([&](const FStructEntry& Entry)
+    {
+        return Entry.NameStruct == NameStruct;
+    });
+
+    if (StructEntry != nullptr)
+    {
+        const FValueEntry* ValueEntry =StructEntry->Values.FindByPredicate([&](const FValueEntry& Entry)
+        {
+            return Entry.Name == Name;
+        });
+
+        return ValueEntry != nullptr ? ValueEntry->ValuePtr : nullptr;
+    }
+
+    return nullptr;
 }
 
 TArray<UScriptStruct*> FNamedStructRegistry::GetAllNameStructs()
@@ -90,32 +141,6 @@ bool FNamedStructRegistry::IsNameStruct(UScriptStruct* NameStruct)
     });
 
     return StructEntry != nullptr;
-}
-
-void FNamedStructRegistry::Startup()
-{
-    Providers.Add(MakeShared<FNamedStructProvider_DataAsset>());
-    Providers.Add(MakeShared<FNamedStructProvider_DataTable>());
-
-    for (TSharedRef<INamedStructProvider>& Provider : Providers)
-    {
-        Provider->OnReloadRequested.AddSP(this, &ThisClass::ReloadAssets);
-    }
-
-    FModuleManager::Get().OnModulesChanged().AddSP(this, &ThisClass::OnModulesChanged);
-    ProcessPendingRegistrations();
-
-    if (IAssetRegistry::Get()->IsLoadingAssets())
-    {
-        IAssetRegistry::Get()->OnFilesLoaded().AddSP(this, &ThisClass::StartAssetsLoading);
-    }
-    else
-    {
-        StartAssetsLoading();
-    }
-
-    IAssetRegistry::Get()->OnAssetAdded().AddSP(this, &ThisClass::OnAssetAdded);
-    IAssetRegistry::Get()->OnAssetRemoved().AddSP(this, &ThisClass::OnAssetRemoved);
 }
 
 TArray<FNamedStructRegistry::FUnprocessedEntry>& FNamedStructRegistry::GetUnprocessedEntries()
@@ -199,6 +224,13 @@ void FNamedStructRegistry::EnsureLoaded()
     }
 }
 
+void FNamedStructRegistry::OnFirstModuleLoaded(FName InModule, EModuleChangeReason InReason)
+{
+    FModuleManager::Get().OnModulesChanged().RemoveAll(this);
+
+    Startup();
+}
+
 void FNamedStructRegistry::OnModulesChanged(FName InModule, EModuleChangeReason InReason)
 {
     if (InReason == EModuleChangeReason::ModuleLoaded)
@@ -269,4 +301,46 @@ bool FNamedStructRegistry::IsRelevantAsset(const FAssetData& AssetData) const
     }
 
     return false;
+}
+
+void FNamedStructRegistry::AddTemporaryValue(UScriptStruct* NameStruct, FName Name, const void* ValuePtr)
+{
+    FStructEntry* StructEntry = FindEntryByNameStruct(NameStruct);
+    if (StructEntry != nullptr)
+    {
+        StructEntry->Values.Add({ Name, ValuePtr });
+    }
+}
+
+void FNamedStructRegistry::RemoveTemporaryValue(UScriptStruct* NameStruct, FName Name)
+{
+    FStructEntry* StructEntry = FindEntryByNameStruct(NameStruct);
+    if (StructEntry != nullptr)
+    {
+        int32 Index = StructEntry->Values.FindLastByPredicate([&](const FValueEntry& Entry)
+        {
+            return Entry.Name == Name;
+        });
+
+        if (ensure(Index != INDEX_NONE))
+        {
+            StructEntry->Values.RemoveAt(Index);
+        }
+    }
+}
+
+FNamedStructRegistry::FStructEntry* FNamedStructRegistry::FindEntryByNameStruct(UScriptStruct* NameStruct)
+{
+    return StructData.FindByPredicate([&](const FStructEntry& Entry)
+    {
+        return Entry.NameStruct == NameStruct;
+    });
+}
+
+FNamedStructRegistry::FStructEntry* FNamedStructRegistry::FindEntryByDataStruct(UScriptStruct* DataStruct)
+{
+    return StructData.FindByPredicate([&](const FStructEntry& Entry)
+    {
+        return Entry.DataStruct == DataStruct;
+    });
 }

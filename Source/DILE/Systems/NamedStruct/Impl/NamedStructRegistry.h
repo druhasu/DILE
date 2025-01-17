@@ -17,6 +17,9 @@ public:
 
     static FNamedStructRegistry& Get();
 
+    /* Called during Module Startup */
+    void Startup();
+
     /* Registers Named struct */
     template<typename TNameStruct, typename TDataStruct>
     uint8 RegisterNamedStruct();
@@ -26,6 +29,8 @@ public:
 
     /* Returns list of possible values of a Named Struct by its struct object. Returns empty list if struct is not registered and ensures */
     TArray<FName> GetPossibleNames(UScriptStruct* NameStruct);
+
+    const void* GetValuePtr(UScriptStruct* NameStruct, FName Name);
 
     /* Returns list of all registered Name structs */
     TArray<UScriptStruct*> GetAllNameStructs();
@@ -37,6 +42,8 @@ public:
     bool IsNameStruct(UScriptStruct* NameStruct);
 
 private:
+    template<typename T> friend struct TDataStructName_Temporary;
+
     /* Contains raw registration data that is not processed */
     struct FUnprocessedEntry
     {
@@ -58,10 +65,6 @@ private:
         TArray<FValueEntry> Values;
     };
 
-private:
-    /* Called at Startup. Initializes the system */
-    void Startup();
-
     TArray<FUnprocessedEntry>& GetUnprocessedEntries();
 
     void ProcessPendingRegistrations();
@@ -69,6 +72,7 @@ private:
     void ReloadAssets();
     void EnsureLoaded();
 
+    void OnFirstModuleLoaded(FName InModule, EModuleChangeReason InReason);
     void OnModulesChanged(FName InModule, EModuleChangeReason InReason);
     void OnAssetsLoaded();
 
@@ -77,7 +81,12 @@ private:
 
     bool IsRelevantAsset(const FAssetData& AssetData) const;
 
-private:
+    void AddTemporaryValue(UScriptStruct* NameStruct, FName Name, const void* ValuePtr);
+    void RemoveTemporaryValue(UScriptStruct* NameStruct, FName Name);
+
+    FStructEntry* FindEntryByNameStruct(UScriptStruct* NameStruct);
+    FStructEntry* FindEntryByDataStruct(UScriptStruct* DataStruct);
+
     TArray<TSharedRef<INamedStructProvider>> Providers;
     TSharedPtr<FStreamableHandle> LoadHandle;
 
