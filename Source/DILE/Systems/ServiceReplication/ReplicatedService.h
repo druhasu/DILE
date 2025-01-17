@@ -41,6 +41,7 @@ namespace ReplicatedService_Private
     public: \
         static_assert(TIsDerivedFrom<ThisClass, IReplicatedService>::Value, "ThisClass must implement IReplicatedService"); \
         bool IsSupportedForNetworking() const override { return true; } \
+        bool IsNameStableForNetworking() const override { return true;} \
         int32 GetFunctionCallspace(UFunction* Function, FFrame* Stack) override \
         { return ReplicatedService_Private::GetFunctionCallspace(this, Function, Stack); } \
         bool CallRemoteFunction(UFunction* Function, void* Parameters, FOutParmRec* OutParms, FFrame* Stack) override \
