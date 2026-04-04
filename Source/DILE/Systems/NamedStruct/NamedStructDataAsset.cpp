@@ -1,6 +1,7 @@
 // Copyright Andrei Sudarikov. All Rights Reserved.
 
 #include "NamedStructDataAsset.h"
+#include "UObject/AssetRegistryTagsContext.h"
 
 FName UNamedStructDataAsset::GetStructName() const
 {
@@ -34,17 +35,17 @@ const void* UNamedStructDataAsset::GetValuePtr() const
 }
 
 #if WITH_EDITORONLY_DATA
-void UNamedStructDataAsset::GetAssetRegistryTags(TArray<FAssetRegistryTag>& OutTags) const
+void UNamedStructDataAsset::GetAssetRegistryTags(FAssetRegistryTagsContext Context) const
 {
     UScriptStruct* DataStruct = GetDataStructType();
 
     if (DataStruct)
     {
         // save StructType into asset tags so we can read it during scan, without loading the asset
-        OutTags.Add(FAssetRegistryTag(DataStructureTag, DataStruct->GetStructPathName().ToString(), FAssetRegistryTag::TT_Alphabetical));
+        Context.AddTag(FAssetRegistryTag(DataStructureTag, DataStruct->GetStructPathName().ToString(), FAssetRegistryTag::TT_Alphabetical));
     }
 
-    Super::GetAssetRegistryTags(OutTags);
+    Super::GetAssetRegistryTags(Context);
 }
 #endif
 

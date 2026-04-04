@@ -8,16 +8,16 @@ public class DILEEditorTarget : TargetRules
     public DILEEditorTarget(TargetInfo Target) : base(Target)
     {
         Type = TargetType.Editor;
-        DefaultBuildSettings = BuildSettingsVersion.V2;
+        DefaultBuildSettings = BuildSettingsVersion.Latest;
         IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
 
         ExtraModuleNames.AddRange(
-            new []
-            {
-                "DILE",
-                "DILEEditor",
-                "DILETests",
-            }
-        );
+        [
+            "DILE",
+            "DILEEditor",
+            "DILETests",
+        ]);
+
+        WindowsPlatform.CompilerVersion = "14.44.35207";
     }
 }

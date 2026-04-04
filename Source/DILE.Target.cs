@@ -8,14 +8,14 @@ public class DILETarget : TargetRules
     public DILETarget(TargetInfo Target) : base(Target)
     {
         Type = TargetType.Game;
-        DefaultBuildSettings = BuildSettingsVersion.V2;
+        DefaultBuildSettings = BuildSettingsVersion.Latest;
         IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
 
         ExtraModuleNames.AddRange(
-            new []
-            {
-                "DILE",
-            }
-        );
+        [
+            "DILE",
+        ]);
+
+        WindowsPlatform.CompilerVersion = "14.44.35207";
     }
 }

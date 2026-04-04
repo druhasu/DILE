@@ -4,3 +4,6 @@
 [submodule "Plugins/UnrealMvvmRepo"]
 	path = Plugins/UnrealMvvmRepo
 	url = https://github.com/druhasu/UnrealMvvm.git
+[submodule "Plugins/DruInterfaceEventsRepo"]
+	path = Plugins/DruInterfaceEventsRepo
+	url = https://github.com/druhasu/DruInterfaceEvents.git

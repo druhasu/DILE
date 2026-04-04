@@ -11,31 +11,26 @@ public class DILEEditor : ModuleRules
         PublicIncludePaths.Add("DILEEditor");
 
         PublicDependencyModuleNames.AddRange(
-            new[]
-            {
-                "AsyncMixin",
-                "Core",
-                "CoreUObject",
-                "DeveloperSettings",
-                "Engine",
-                "InputCore",
-                "UMG",
-            }
-        );
+        [
+            "Core",
+            "CoreUObject",
+            "DeveloperSettings",
+            "Engine",
+            "InputCore",
+            "UMG",
+        ]);
 
         PrivateDependencyModuleNames.AddRange(
-            new[]
-            {
-                "BlueprintGraph",
-                "DILE",
-                "GraphEditor",
-                "PropertyEditor",
-                "Slate",
-                "SlateCore",
-                "UnrealDI",
-                "UnrealEd",
-                "UnrealMvvm",
-            }
-        );
+        [
+            "BlueprintGraph",
+            "DILE",
+            "GraphEditor",
+            "PropertyEditor",
+            "Slate",
+            "SlateCore",
+            "UnrealDI",
+            "UnrealEd",
+            "UnrealMvvm",
+        ]);
     }
 }

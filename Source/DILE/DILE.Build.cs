@@ -11,25 +11,31 @@ public class DILE : ModuleRules
         PublicIncludePaths.Add("DILE");
 
         PublicDependencyModuleNames.AddRange(
-            new[]
-            {
-                "Core",
-                "CoreUObject",
-                "DeveloperSettings",
-                "Engine",
-                "InputCore",
-                "UMG",
-            }
-        );
+        [
+            "AIModule",
+            "Core",
+            "CoreUObject",
+            "DeveloperSettings",
+            "DruInterfaceEvents",
+            "Engine",
+            "EnhancedInput",
+            "GameplayAbilities",
+            "GameplayTags",
+            "GameplayTasks",
+            "InputCore",
+            "Mover",
+            "NetworkPrediction",
+            "UE5Coro",
+            "UMG",
+            "UnrealDI",
+            "UnrealMvvm",
+        ]);
 
         PrivateDependencyModuleNames.AddRange(
-            new[]
-            { 
-                "Slate",
-                "SlateCore",
-                "UnrealDI",
-                "UnrealMvvm",
-            }
-        );
+        [
+            "NetCore",
+            "Slate",
+            "SlateCore",
+        ]);
     }
 }

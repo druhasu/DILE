@@ -1,7 +1,9 @@
 // Copyright Andrei Sudarikov. All Rights Reserved.
 
 #include "NamedStructProvider_DataTable.h"
+
 #include "Engine/DataTable.h"
+#include "UObject/LinkerLoad.h"
 
 void FNamedStructProvider_DataTable::GetAssetsBaseClassPaths(TArray<FTopLevelAssetPath>& OutClassPaths) const
 {

@@ -5,6 +5,8 @@
 #include "Modules/ModuleManager.h"
 #include "AssetRegistry/IAssetRegistry.h"
 #include "Engine/AssetManager.h"
+#include "Misc/CoreDelegates.h"
+
 #include "INamedStructProvider.h"
 #include "NamedStructProvider_DataTable.h"
 #include "NamedStructProvider_DataAsset.h"

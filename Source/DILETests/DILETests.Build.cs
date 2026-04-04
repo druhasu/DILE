@@ -11,25 +11,23 @@ public class DILETests : ModuleRules
         PrivateIncludePaths.Add("DILETests");
 
         PublicDependencyModuleNames.AddRange(
-            new[]
-            {
-                "Core",
-                "CoreUObject",
-                "Engine",
-                "InputCore",
-            }
-        );
+        [
+            "Core",
+            "CoreUObject",
+            "Engine",
+            "InputCore",
+        ]);
 
         PrivateDependencyModuleNames.AddRange(
-            new[]
-            {
-                "DILE",
-                "Slate",
-                "SlateCore",
-                "UnrealDI",
-                "UnrealEd",
-                "UnrealMvvm",
-            }
-        );
+        [
+            "DILE",
+            "Slate",
+            "SlateCore",
+            "UE5Coro",
+            "UMG",
+            "UnrealDI",
+            "UnrealEd",
+            "UnrealMvvm",
+        ]);
     }
 }

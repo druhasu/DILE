@@ -6,6 +6,8 @@
 
 #include "NamedStructDataAsset.generated.h"
 
+class FAssetRegistryTagsContext;
+
 /*
  * Base class for NamedStruct assets
  */
@@ -25,7 +27,7 @@ public:
     const void* GetValuePtr() const;
 
 #if WITH_EDITORONLY_DATA
-    virtual void GetAssetRegistryTags(TArray<FAssetRegistryTag>& OutTags) const override;
+    virtual void GetAssetRegistryTags(FAssetRegistryTagsContext Context) const override;
 #endif
     static inline const FName DataStructureTag = "DataStructure";
 

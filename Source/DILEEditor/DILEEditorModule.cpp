@@ -2,9 +2,11 @@
 
 #include "Modules/ModuleManager.h"
 
+#include "PropertyEditorModule.h"
+
 #include "Systems/NamedStruct/Impl/NamedStructRegistry.h"
-#include "Systems/NamedStruct/DataStructNamePropertyCustomization.h"
-#include "Systems/NamedStruct/DataStructNameGraphPanelPinFactory.h"
+#include "Systems/NamedStruct/DLDataStructNamePropertyCustomization.h"
+#include "Systems/NamedStruct/DLDataStructNameGraphPanelPinFactory.h"
 
 class FDILEEditorModule : public IModuleInterface
 {
@@ -17,11 +19,11 @@ public:
 
         for (auto StructType : FNamedStructRegistry::Get().GetAllNameStructs())
         {
-            PropertyModule.RegisterCustomPropertyTypeLayout(StructType->GetFName(), FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FDataStructNamePropertyCustomization::Make, StructType));
+            PropertyModule.RegisterCustomPropertyTypeLayout(StructType->GetFName(), FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FDLDataStructNamePropertyCustomization::Make, StructType));
             PropertyTypeNames.Add(StructType->GetFName());
         }
 
-        DataStructNameGraphPanelPinFactory = MakeShared<FDataStructNameGraphPanelPinFactory>();
+        DataStructNameGraphPanelPinFactory = MakeShared<FDLDataStructNameGraphPanelPinFactory>();
         FEdGraphUtilities::RegisterVisualPinFactory(DataStructNameGraphPanelPinFactory);
     }
 
@@ -41,7 +43,7 @@ public:
 
 private:
     TArray<FName> PropertyTypeNames;
-    TSharedPtr<FDataStructNameGraphPanelPinFactory> DataStructNameGraphPanelPinFactory;
+    TSharedPtr<FDLDataStructNameGraphPanelPinFactory> DataStructNameGraphPanelPinFactory;
 };
 
 IMPLEMENT_MODULE( FDILEEditorModule, DILEEditor );

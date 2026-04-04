@@ -2,6 +2,8 @@
 
 #include "NamedStructProvider_DataAsset.h"
 
+#include "UObject/LinkerLoad.h"
+
 #include "Systems/NamedStruct/NamedStructDataAsset.h"
 
 void FNamedStructProvider_DataAsset::GetAssetsBaseClassPaths(TArray<FTopLevelAssetPath>& OutClassPaths) const
@@ -23,13 +25,13 @@ FTopLevelAssetPath FNamedStructProvider_DataAsset::GetDataStructType(const FAsse
     if (AssetData.IsAssetLoaded())
     {
         // if it is already loaded we can just ask UNamedStructDataAsset directly
-        auto* DataAsset = Cast<UNamedStructDataAsset>(AssetData.GetAsset());
+        UNamedStructDataAsset* DataAsset = Cast<UNamedStructDataAsset>(AssetData.GetAsset());
         if (DataAsset != nullptr)
         {
             // Make sure UNamedStructDataAsset object is fully loaded, because this call may be made during loading
             if (DataAsset->HasAnyFlags(EObjectFlags::RF_NeedLoad))
             {
-                auto* Linker = DataAsset->GetLinker();
+                FLinkerLoad* Linker = DataAsset->GetLinker();
                 Linker->Preload(DataAsset);
             }
 
