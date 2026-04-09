@@ -19,6 +19,7 @@ class DILE_API IDLViewFactory
     GENERATED_BODY()
 
 public:
+    /* Creates a View with specified class and Content */
     template <typename T>
     T* CreateView(TSubclassOf<T> ViewClass, const FDLViewContent& Content)
     {
@@ -26,5 +27,6 @@ public:
     }
 
 protected:
+    /* Creates a View with specified class and Content */
     virtual UObject* CreateView(UClass* ViewClass, const FDLViewContent& Content) = 0;
 };

@@ -8,7 +8,6 @@
 
 #include "DI/ObjectContainerBuilder.h"
 #include "DI/InjectOnConstruction.h"
-#include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/PlayerState.h"
 
@@ -52,26 +51,6 @@ void ADLGameState::OnRep_ReplicatedHasBegunPlay()
     }
 }
 
-bool ADLGameState::IsClassSupported(UClass* EffectiveClass) const
-{
-    // only non Scene components are supported here
-    // the rest will be handled by default InstanceFactory
-    return EffectiveClass->IsChildOf<UActorComponent>() && ensure(!EffectiveClass->IsChildOf<USceneComponent>());
-}
-
-UObject* ADLGameState::Create(UObject* Outer, UClass* EffectiveClass) const
-{
-    UActorComponent* Result = NewObject<UActorComponent>(Outer, EffectiveClass);
-    Result->CreationMethod = EComponentCreationMethod::Instance;
-    return Result;
-}
-
-void ADLGameState::FinalizeCreation(UObject* Object) const
-{
-    // register component after it has received InitDependencies
-    CastChecked<UActorComponent>(Object)->RegisterComponent();
-}
-
 UObjectContainer* ADLGameState::GetParentContainer()
 {
     // Use GameInstance container as Parent
@@ -89,11 +68,7 @@ UObjectContainer* ADLGameState::GetParentContainer()
 
 void ADLGameState::ConfigureContainer(FObjectContainerBuilder& Builder)
 {
-    FDLActorContainerConfiguratorContext Context(this);
-    FDLContainerConfigurator_GameState::Configure(Builder, Context);
-
-    // Register itself as an InstanceFactory to allow creation of components via Container
-    Builder.RegisterInstance(this).As<IInstanceFactory>();
+    FDLContainerConfigurator_GameState::Configure(Builder, this);
 }
 
 void ADLGameState::OnContainerCreated(UObjectContainer* Container)
@@ -123,11 +98,6 @@ bool ADLGameState::IsReadyForBeginPlay() const
 
     APlayerState* MyPlayerState = MyController->GetPlayerState<APlayerState>();
     TryCondition(MyPlayerState != nullptr);
-
-    //APawn* MyPawn = MyController->GetPawn();
-    //TryCondition(MyPawn != nullptr);
-    //TryCondition(MyPawn == MyPlayerState->GetPawn());
-    //TryCondition(MyPawn->GetController() == MyController);
 
 #undef TryCondition
 

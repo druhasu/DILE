@@ -27,7 +27,7 @@ public:
     );
 
     // Begin IDLInventoryService
-    TArrayView<TObjectPtr<UDLItemInstance>> GetAllItems() const override;
+    TConstStridedView<TObjectPtr<UDLItemInstance>> GetAllItems() const override;
     UDLItemInstance* CreateItem(const UDLItemType* ItemType) override;
     void AddItem(UDLItemInstance* Item) override;
     void RemoveItem(UDLItemInstance* Item) override;

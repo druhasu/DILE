@@ -5,9 +5,9 @@
 #include "DLContainerConfiguratorContext.h"
 
 class FObjectContainerBuilder;
-class FDLActorContainerConfiguratorContext;
+class ADLGameState;
 
 struct FDLContainerConfigurator_GameState
 {
-    static void Configure(FObjectContainerBuilder& Builder, const FDLActorContainerConfiguratorContext& Context);
+    static void Configure(FObjectContainerBuilder& Builder, ADLGameState* GameState);
 };

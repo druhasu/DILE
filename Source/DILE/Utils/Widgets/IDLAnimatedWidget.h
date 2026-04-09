@@ -20,13 +20,18 @@ class DILE_API IDLAnimatedWidget
     GENERATED_BODY()
 
 public:
+    /* Plays Appear animation. Returns coroutine to track when animation finishes */
     UFUNCTION(BlueprintNativeEvent)
     FVoidCoroutine Appear();
 
+    /* Plays Disappear animation. Returns coroutine to track when animation finishes */
     UFUNCTION(BlueprintNativeEvent)
     FVoidCoroutine Disappear();
 
+    /* Tries to show the Widget playing its Appear animation if possible */
     static FVoidCoroutine TryShow(UWidget* Widget);
+
+    /* Tries to hide the Widget playing its Disappear animation if possible */
     static FVoidCoroutine TryHide(UWidget* Widget);
 };
 

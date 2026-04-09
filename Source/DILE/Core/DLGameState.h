@@ -3,7 +3,6 @@
 #pragma once
 
 #include "GameFramework/GameStateBase.h"
-#include "DI/IInstanceFactory.h"
 
 #include "DLGameState.generated.h"
 
@@ -15,7 +14,7 @@ class UDLContainerComponent;
   GameState responsible for creating DI container
  */
 UCLASS()
-class ADLGameState : public AGameStateBase, public IInstanceFactory
+class ADLGameState : public AGameStateBase
 {
     GENERATED_BODY()
 
@@ -29,12 +28,6 @@ public:
 
 protected:
     void OnRep_ReplicatedHasBegunPlay() override;
-
-    // Begin IInstanceFactory
-    bool IsClassSupported(UClass* EffectiveClass) const override;
-    UObject* Create(UObject* Outer, UClass* EffectiveClass) const override;
-    void FinalizeCreation(UObject* Object) const override;
-    // End IInstanceFactory
 
 private:
     UObjectContainer* GetParentContainer();

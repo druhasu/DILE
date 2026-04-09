@@ -16,24 +16,24 @@ struct FDLActionEventBinding : FEnhancedInputActionEventBinding
     {
     }
 
-    virtual void Execute(const FInputActionInstance& ActionData) const override
+    void Execute(const FInputActionInstance& ActionData) const override
     {
         Delegate.Execute(ActionData);
     }
 
-    virtual TUniquePtr<FEnhancedInputActionEventBinding> Clone() const override
+    TUniquePtr<FEnhancedInputActionEventBinding> Clone() const override
     {
         return TUniquePtr<FEnhancedInputActionEventBinding>(new FDLActionEventBinding(*this, EInputBindingClone::ForceClone));
     }
 
-    virtual void SetShouldFireWithEditorScriptGuard(const bool bNewValue) override {}
+    void SetShouldFireWithEditorScriptGuard(const bool bNewValue) override {}
 
-    virtual bool IsBoundToObject(FDelegateUserObjectConst Object) const override
+    bool IsBoundToObject(FDelegateUserObjectConst Object) const override
     {
         return Delegate.IsBoundToObject(Object);
     }
 
-    virtual UObject* GetUObject() const override
+    UObject* GetUObject() const override
     {
         return Delegate.GetUObject();
     }

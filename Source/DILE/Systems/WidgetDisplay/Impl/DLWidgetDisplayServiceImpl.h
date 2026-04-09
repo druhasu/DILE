@@ -27,15 +27,22 @@ public:
     );
 
     // Begin IDLWidgetDisplayService
-    TDLTask<UDLUserWidget*> DisplayWidget(FGameplayTag SlotTag, const TSoftClassPtr<UDLUserWidget>& WidgetClass, FDLViewContent Content) override { return std::move(DisplayWidgetImpl(SlotTag, WidgetClass, MoveTemp(Content))); }
-    FDLTask CloseWidget(FGameplayTag SlotTag) override { return CloseWidgetImpl(SlotTag); }
+    TDLTask<UDLUserWidget*> DisplayWidget(FGameplayTag SlotTag, const TSoftClassPtr<UDLUserWidget>& WidgetClass, FDLViewContent Content, bool bWaitForAnimation) override
+    {
+        return std::move(DisplayWidgetImpl(SlotTag, WidgetClass, MoveTemp(Content), bWaitForAnimation));
+    }
+
+    FDLTask CloseWidget(FGameplayTag SlotTag, bool bWaitForAnimation) override
+    {
+        return CloseWidgetImpl(SlotTag, bWaitForAnimation);
+    }
     // End IDLWidgetDisplayService
 
     static void AddReferencedObjects(UObject* InThis, FReferenceCollector& Collector);
 
 private:
-    TDLTask<UDLUserWidget*> DisplayWidgetImpl(FGameplayTag SlotTag, const TSoftClassPtr<UDLUserWidget>& WidgetClass, FDLViewContent Content, FForceLatentCoroutine = {});
-    FDLTask CloseWidgetImpl(FGameplayTag SlotTag, FForceLatentCoroutine = {});
+    TDLTask<UDLUserWidget*> DisplayWidgetImpl(FGameplayTag SlotTag, const TSoftClassPtr<UDLUserWidget>& WidgetClass, FDLViewContent Content, bool bWaitForAnimation, FForceLatentCoroutine = {});
+    FDLTask CloseWidgetImpl(FGameplayTag SlotTag, bool bWaitForAnimation, FForceLatentCoroutine = {});
 
     void OnWidgetDestructed(UUserWidget* Widget);
 

@@ -3,7 +3,7 @@
 #include "DLContainerComponent.h"
 #include "Core/DLGameMode.h"
 #include "Core/DLGameState.h"
-#include "Core/DLContainerConfigurationAsset.h"
+#include "Core/DLGameModeConfigurationAsset.h"
 #include "Core/DependencyManagement/DLContainerConfiguratorContext.h"
 #include "Systems/ServiceReplication/DLReplicatedService.h"
 #include "Utils/DLEnsure.h"
@@ -78,6 +78,7 @@ void UDLContainerComponent::RemoveSubObject(UObject* SubObject)
 
 void UDLContainerComponent::PreNetReceive()
 {
+    // create Container on Clients before applying any received data
     if (Container == nullptr)
     {
         CreateContainer();
@@ -92,6 +93,7 @@ void UDLContainerComponent::BeginPlay()
 
     if (Container != nullptr)
     {
+        // call startup logic if Container is alredy created
         StartupShutdownHelper.Startup(Container);
     }
 }
@@ -174,9 +176,12 @@ void UDLContainerComponent::CreateContainer()
 
     if (HasBegunPlay())
     {
+        // call startup logic right away if BeginPlay has already happened
         StartupShutdownHelper.Startup(Container);
     }
 
+    // change the property to force replication of this component
+    // otherwise we will not receive PreNetReceive callback on Client and container will not be created
     MARK_PROPERTY_DIRTY_FROM_NAME(ThisClass, bContainerCreated, this);
     bContainerCreated = true;
 

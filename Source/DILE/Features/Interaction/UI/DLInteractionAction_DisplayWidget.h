@@ -11,6 +11,9 @@
 class IDLWidgetDisplayService;
 class UDLUserWidget;
 
+/*
+ * Interaction action to display Widget
+ */
 UCLASS(Abstract, Blueprintable)
 class UDLInteractionAction_DisplayWidget : public UDLInteractionAction
 {
@@ -23,9 +26,11 @@ protected:
     FDLTask ExecuteAsync(TScriptInterface<IDLInteractable> Interactable) const override;
 
 protected:
+    /* Slot to display widget into */
     UPROPERTY(EditDefaultsOnly, meta = (Categories = "WidgetSlot"))
     FGameplayTag WidgetSlot;
 
+    /* Class of a Widget to display */
     UPROPERTY(EditDefaultsOnly)
     TSoftClassPtr<UDLUserWidget> WidgetClass;
 

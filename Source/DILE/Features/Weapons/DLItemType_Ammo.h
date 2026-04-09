@@ -7,6 +7,9 @@
 
 #include "DLItemType_Ammo.generated.h"
 
+/*
+ * Ammo Item type
+ */
 UCLASS()
 class UDLItemType_Ammo : public UDLItemType
 {

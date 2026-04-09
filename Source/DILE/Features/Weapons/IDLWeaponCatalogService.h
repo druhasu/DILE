@@ -21,7 +21,9 @@ class DILE_API IDLWeaponCatalogService
     GENERATED_BODY()
 
 public:
+    /* List of all existing weapons */
     virtual const TArray<TDLAssetId<UDLItemType_Weapon>>& GetWeapons() const = 0;
 
+    /* Loads Weapon data with given WeaponId */
     virtual TDLTask<UDLItemType_Weapon*> GetWeaponData(const TDLAssetId<UDLItemType_Weapon>& WeaponId, const TArray<FName>& LoadBundles = {}) const = 0;
 };

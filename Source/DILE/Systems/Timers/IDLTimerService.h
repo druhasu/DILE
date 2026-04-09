@@ -10,8 +10,8 @@
 UINTERFACE(MinimalApi)
 class UDLTimerService : public UInterface { GENERATED_BODY() };
 
-/**
- * Interface for service that provides timers
+/*
+ * Allows to set and clear Timers. Intended to hide direct dependency on UWorld::GetTimerManager()
  */
 class DILE_API IDLTimerService
 {
@@ -30,37 +30,37 @@ public:
      * @param InFirstDelay			The time (in seconds) for the first iteration of a looping timer. If < 0.f InRate will be used.
      */
     template<class UserClass>
-    FORCEINLINE void SetTimer(FTimerHandle& InOutHandle, UserClass* InObj, typename FTimerDelegate::TMethodPtr<UserClass> InTimerMethod, float InRate, bool InbLoop = false, float InFirstDelay = -1.f)
+    void SetTimer(FTimerHandle& InOutHandle, UserClass* InObj, typename FTimerDelegate::TMethodPtr<UserClass> InTimerMethod, float InRate, bool InbLoop = false, float InFirstDelay = -1.f)
     {
         SetTimer(InOutHandle, FTimerUnifiedDelegate(FTimerDelegate::CreateUObject(InObj, InTimerMethod)), InRate, InbLoop, InFirstDelay);
     }
 
     template<class UserClass>
-    FORCEINLINE void SetTimer(FTimerHandle& InOutHandle, UserClass* InObj, typename FTimerDelegate::TConstMethodPtr<UserClass> InTimerMethod, float InRate, bool InbLoop = false, float InFirstDelay = -1.f)
+    void SetTimer(FTimerHandle& InOutHandle, UserClass* InObj, typename FTimerDelegate::TConstMethodPtr<UserClass> InTimerMethod, float InRate, bool InbLoop = false, float InFirstDelay = -1.f)
     {
         SetTimer(InOutHandle, FTimerUnifiedDelegate(FTimerDelegate::CreateUObject(InObj, InTimerMethod)), InRate, InbLoop, InFirstDelay);
     }
 
     /** Version that takes any generic delegate. */
-    FORCEINLINE void SetTimer(FTimerHandle& InOutHandle, FTimerDelegate const& InDelegate, float InRate, bool InbLoop, float InFirstDelay = -1.f)
+    void SetTimer(FTimerHandle& InOutHandle, FTimerDelegate const& InDelegate, float InRate, bool InbLoop, float InFirstDelay = -1.f)
     {
         SetTimer(InOutHandle, FTimerUnifiedDelegate(InDelegate), InRate, InbLoop, InFirstDelay);
     }
 
     /** Version that takes a dynamic delegate (e.g. for UFunctions). */
-    FORCEINLINE void SetTimer(FTimerHandle& InOutHandle, FTimerDynamicDelegate const& InDynDelegate, float InRate, bool InbLoop, float InFirstDelay = -1.f)
+    void SetTimer(FTimerHandle& InOutHandle, FTimerDynamicDelegate const& InDynDelegate, float InRate, bool InbLoop, float InFirstDelay = -1.f)
     {
         SetTimer(InOutHandle, FTimerUnifiedDelegate(InDynDelegate), InRate, InbLoop, InFirstDelay);
     }
 
     /** Version that doesn't take a delegate */
-    FORCEINLINE void SetTimer(FTimerHandle& InOutHandle, float InRate, bool InbLoop, float InFirstDelay = -1.f)
+    void SetTimer(FTimerHandle& InOutHandle, float InRate, bool InbLoop, float InFirstDelay = -1.f)
     {
         SetTimer(InOutHandle, FTimerUnifiedDelegate(), InRate, InbLoop, InFirstDelay);
     }
 
     /** Version that takes a TFunction */
-    FORCEINLINE void SetTimer(FTimerHandle& InOutHandle, TFunction<void(void)>&& Callback, float InRate, bool InbLoop, float InFirstDelay = -1.f)
+    void SetTimer(FTimerHandle& InOutHandle, TFunction<void(void)>&& Callback, float InRate, bool InbLoop, float InFirstDelay = -1.f)
     {
         SetTimer(InOutHandle, FTimerUnifiedDelegate(MoveTemp(Callback)), InRate, InbLoop, InFirstDelay);
     }
@@ -75,31 +75,31 @@ public:
      * @param inTimerMethod			Method to call when timer fires.
      */
     template<class UserClass>
-    FORCEINLINE FTimerHandle SetTimerForNextTick(UserClass* inObj, typename FTimerDelegate::TMethodPtr<UserClass> inTimerMethod)
+    FTimerHandle SetTimerForNextTick(UserClass* inObj, typename FTimerDelegate::TMethodPtr<UserClass> inTimerMethod)
     {
         return SetTimerForNextTick(FTimerUnifiedDelegate(FTimerDelegate::CreateUObject(inObj, inTimerMethod)));
     }
 
     template<class UserClass>
-    FORCEINLINE FTimerHandle SetTimerForNextTick(UserClass* inObj, typename FTimerDelegate::TConstMethodPtr<UserClass> inTimerMethod)
+    FTimerHandle SetTimerForNextTick(UserClass* inObj, typename FTimerDelegate::TConstMethodPtr<UserClass> inTimerMethod)
     {
         return SetTimerForNextTick(FTimerUnifiedDelegate(FTimerDelegate::CreateUObject(inObj, inTimerMethod)));
     }
 
     /** Version that takes any generic delegate. */
-    FORCEINLINE FTimerHandle SetTimerForNextTick(FTimerDelegate const& InDelegate)
+    FTimerHandle SetTimerForNextTick(FTimerDelegate const& InDelegate)
     {
         return SetTimerForNextTick(FTimerUnifiedDelegate(InDelegate));
     }
 
     /** Version that takes a dynamic delegate (e.g. for UFunctions). */
-    FORCEINLINE FTimerHandle SetTimerForNextTick(FTimerDynamicDelegate const& InDynDelegate)
+    FTimerHandle SetTimerForNextTick(FTimerDynamicDelegate const& InDynDelegate)
     {
         return SetTimerForNextTick(FTimerUnifiedDelegate(InDynDelegate));
     }
 
     /** Version that takes a TFunction */
-    FORCEINLINE FTimerHandle SetTimerForNextTick(TFunction<void(void)>&& Callback)
+    FTimerHandle SetTimerForNextTick(TFunction<void(void)>&& Callback)
     {
         return SetTimerForNextTick(FTimerUnifiedDelegate(MoveTemp(Callback)));
     }

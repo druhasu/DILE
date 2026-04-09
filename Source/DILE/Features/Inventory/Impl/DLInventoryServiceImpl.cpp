@@ -28,12 +28,9 @@ void UDLInventoryServiceImpl::GetLifetimeReplicatedProps(TArray<FLifetimePropert
     DOREPLIFETIME_CONDITION(ThisClass, ItemCounts, COND_OwnerOnly);
 }
 
-TArrayView<TObjectPtr<UDLItemInstance>> UDLInventoryServiceImpl::GetAllItems() const
+TConstStridedView<TObjectPtr<UDLItemInstance>> UDLInventoryServiceImpl::GetAllItems() const
 {
-    //static_assert(sizeof(FDLItemInstancesCollectionEntry) == sizeof(TObjectPtr<UDLItemInstance>), "Instance entry size invalid");
-    //return MakeArrayView(reinterpret_cast<TObjectPtr<UDLItemInstance>*>(ItemInstances.Entries.GetData()), ItemInstances.Entries.Num());
-    DL_ENSURE_RETURN(!"Not implemented", {});
-    return {};
+    return MakeConstStridedView(ItemInstances.Entries, &FDLItemInstancesCollectionEntry::ItemInstance);
 }
 
 UDLItemInstance* UDLInventoryServiceImpl::CreateItem(const UDLItemType* ItemType)

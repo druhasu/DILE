@@ -37,18 +37,19 @@ void UDLWidgetDisplayServiceImpl::AddReferencedObjects(UObject* InThis, FReferen
     }
 }
 
-TDLTask<UDLUserWidget*> UDLWidgetDisplayServiceImpl::DisplayWidgetImpl(FGameplayTag SlotTag, const TSoftClassPtr<UDLUserWidget>& WidgetClass, FDLViewContent Content, FForceLatentCoroutine)
+TDLTask<UDLUserWidget*> UDLWidgetDisplayServiceImpl::DisplayWidgetImpl(FGameplayTag SlotTag, const TSoftClassPtr<UDLUserWidget>& WidgetClass, FDLViewContent Content, bool bWaitForAnimation, FForceLatentCoroutine)
 {
     ContentToKeep.Add(&Content); // required to keep Content from being garbage collected
+    ON_SCOPE_EXIT{ ContentToKeep.RemoveSingleSwap(&Content, EAllowShrinking::No); };
 
     TSubclassOf<UDLUserWidget> ViewClass = Cast<UClass>(co_await StreamableService->AsyncLoad(WidgetClass.ToSoftObjectPath()));
     DL_ENSURE_CORETURN(ViewClass != nullptr, nullptr);
 
     TScriptInterface<IDLWidgetSlot> WidgetSlot = co_await WidgetSlotsService->WaitForSlot(SlotTag);
     UDLUserWidget* Widget = ViewFactory->CreateView(ViewClass, Content);
-    ContentToKeep.RemoveSingleSwap(&Content, EAllowShrinking::No);
 
-    WidgetSlot->AddWidget(Widget); // intentionally no co_await here
+    auto AnimationTask = WidgetSlot->AddWidget(Widget); // intentionally no co_await here
+
     if (Widget->NeedsMouseInput())
     {
         Widget->OnNativeDestruct.AddUObject(this, &ThisClass::OnWidgetDestructed);
@@ -58,13 +59,28 @@ TDLTask<UDLUserWidget*> UDLWidgetDisplayServiceImpl::DisplayWidgetImpl(FGameplay
         }
     }
 
+    if (bWaitForAnimation)
+        co_await AnimationTask;
+
     co_return Widget;
 }
 
-FDLTask UDLWidgetDisplayServiceImpl::CloseWidgetImpl(FGameplayTag SlotTag, FForceLatentCoroutine)
+FDLTask UDLWidgetDisplayServiceImpl::CloseWidgetImpl(FGameplayTag SlotTag, bool bWaitForAnimation, FForceLatentCoroutine)
 {
-    TScriptInterface<IDLWidgetSlot> WidgetSlot = co_await WidgetSlotsService->WaitForSlot(SlotTag);
-    DL_ENSURE_CORETURN(!"Not Implemented properly");
+    TScriptInterface<IDLWidgetSlot> WidgetSlot = WidgetSlotsService->GetSlot(SlotTag);
+    if (WidgetSlot == nullptr)
+        co_return;
+
+    TArrayView<TObjectPtr<UWidget>> Widgets = WidgetSlot->GetWidgets();
+    if (Widgets.Num() == 0)
+        co_return;
+
+    // we expect only one widget in the slot
+    DL_ENSURE_CORETURN(Widgets.Num() == 1);
+
+    auto AnimationTask = WidgetSlot->RemoveWidget(Widgets[0]);
+    if (bWaitForAnimation)
+        co_await AnimationTask;
 }
 
 void UDLWidgetDisplayServiceImpl::OnWidgetDestructed(UUserWidget* Widget)

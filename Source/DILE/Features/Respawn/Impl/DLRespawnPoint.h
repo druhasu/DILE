@@ -7,6 +7,9 @@
 
 #include "DLRespawnPoint.generated.h"
 
+/*
+ * Respawn point for a Player
+ */
 UCLASS()
 class DILE_API ADLRespawnPoint : public APlayerStart, public FDLTrackedObject
 {

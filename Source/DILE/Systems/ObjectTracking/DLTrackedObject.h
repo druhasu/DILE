@@ -10,17 +10,22 @@
 class UObject;
 class UClass;
 
+/*
+ * Base class for object that can be registered and unregistered in IDLObjectTrackerService
+ */
 class FDLTrackedObject
 {
     friend class UDLObjectTrackerServiceImpl;
 
 protected:
+    /* Register object in service. Pass 'this' as Obj */
     template<typename TObj>
     void RegisterObject(UObject* Obj)
     {
         RegisterObject(Obj, UnrealDI_Impl::TStaticClass<TObj>::StaticClass());
     }
 
+    /* Unregister object from service. Pass 'this' as Obj */
     template<typename TObj>
     void UnregisterObject(UObject* Obj)
     {

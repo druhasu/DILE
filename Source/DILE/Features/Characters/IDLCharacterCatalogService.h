@@ -24,7 +24,9 @@ class DILE_API IDLCharacterCatalogService
     GENERATED_BODY()
 
 public:
+    /* List of all characters */
     virtual const TArray<TDLAssetId<UDLItemType_Character>>& GetCharacters() const = 0;
 
+    /* Loads data of a character with given AssetId */
     virtual TDLTask<UDLItemType_Character*> GetCharacterData(const TDLAssetId<UDLItemType_Character>& Character, const TArray<FName>& LoadBundles = {}) const = 0;
 };

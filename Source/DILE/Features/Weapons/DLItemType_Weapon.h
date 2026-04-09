@@ -8,6 +8,9 @@
 
 #include "DLItemType_Weapon.generated.h"
 
+/*
+ * Weapon Item type
+ */
 UCLASS()
 class UDLItemType_Weapon : public UDLItemType_Equipment
 {

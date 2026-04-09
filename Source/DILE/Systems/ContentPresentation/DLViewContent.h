@@ -8,6 +8,9 @@
 
 #include "DLViewContent.generated.h"
 
+/*
+ * Content for a View. May contain either Struct or Object content
+ */
 USTRUCT(BlueprintType)
 struct FDLViewContent
 {
@@ -138,12 +141,14 @@ class UDLViewContentLibrary : public UBlueprintFunctionLibrary
     GENERATED_BODY()
 
 public:
+    /* Creates DLViewContent from provided UObject */
     UFUNCTION(BlueprintCallable, meta = (NativeMakeFunc))
     static FDLViewContent MakeObjectViewContent(UObject* InObjectContent)
     {
         return FDLViewContent(InObjectContent);
     }
 
+    /* Creates DLViewContent from provided InstancedStruct */
     UFUNCTION(BlueprintCallable, meta = (NativeMakeFunc))
     static FDLViewContent MakeStructViewContent(FInstancedStruct InStructContent)
     {

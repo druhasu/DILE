@@ -63,7 +63,7 @@ UObject* UDLInjectorProvider::GetForPlayerController(APlayerController* Controll
 {
     if (ADLPlayerState* PlayerState = Controller->GetPlayerState<ADLPlayerState>(); ensure(PlayerState != nullptr))
     {
-        return PlayerState;
+        return PlayerState->GetContainer();
     }
 
     return Controller->GetWorld();
@@ -81,7 +81,7 @@ UObject* UDLInjectorProvider::GetForPlayerState(APlayerState* PlayerState)
 
 UObject* UDLInjectorProvider::GetForAIController(AAIController* Controller)
 {
-    // AIs don't have their own controller right now, fallback to world
+    // AIs don't have their own Container right now, fallback to world
     return Controller->GetWorld();
 }
 

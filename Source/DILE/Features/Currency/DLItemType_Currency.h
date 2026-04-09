@@ -7,6 +7,9 @@
 
 #include "DLItemType_Currency.generated.h"
 
+/*
+ * Currency Item type
+ */
 UCLASS()
 class UDLItemType_Currency : public UDLItemType
 {

@@ -14,7 +14,7 @@ UINTERFACE(MinimalApi)
 class UDLInteractionService : public UInterface { GENERATED_BODY() };
 
 /*
- *
+ * Allows interaction with objects in the World
  */
 class DILE_API IDLInteractionService
 {

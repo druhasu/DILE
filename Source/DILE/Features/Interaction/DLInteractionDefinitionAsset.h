@@ -8,15 +8,20 @@
 
 class UDLInteractionAction;
 
+/*
+ * Definition of an interaction
+ */
 UCLASS()
 class DILE_API UDLInteractionDefinitionAsset : public UDataAsset
 {
     GENERATED_BODY()
 
 public:
+    /* Format for the name of this Interaction to show in the UI */
     UPROPERTY(EditDefaultsOnly)
     FText DisplayNameFormat;
 
+    /* Class of InteractionAction that handles actual interaction logic */
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<UDLInteractionAction> ActionClass;
 };

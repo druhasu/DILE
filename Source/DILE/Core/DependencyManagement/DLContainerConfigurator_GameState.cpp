@@ -1,31 +1,35 @@
 ﻿// Copyright Andrei Sudarikov. All Rights Reserved.
 
 #include "DLContainerConfigurator_GameState.h"
+#include "DLContainerConfiguratorContext.h"
+#include "DLInjectorProvider.h"
+#include "DLComponentInstanceFactory.h"
 #include "Core/DLGameState.h"
 #include "Core/DLGameMode.h"
-
-#include "DI/ObjectContainerBuilder.h"
-
-#include "Core/DependencyManagement/DLInjectorProvider.h"
-
 #include "Features/Respawn/Impl/DLRespawnServiceImpl.h"
-
 #include "Systems/GameModeEvents/IDLGameModeEventsService.h"
 #include "Systems/Timers/Impl/DLTimerServiceImpl.h"
 
-void FDLContainerConfigurator_GameState::Configure(FObjectContainerBuilder& Builder, const FDLActorContainerConfiguratorContext& Context)
+#include "DI/ObjectContainerBuilder.h"
+
+void FDLContainerConfigurator_GameState::Configure(FObjectContainerBuilder& Builder, ADLGameState* GameState)
 {
     // this method configures container for GameState by calling various Register methods on a Builder object
     // this is a place where you tell the container which interfaces are implemented by which classes and what lifetime of created objects will be
 
-    ADLGameState* GameState = Cast<ADLGameState>(Context.GetActor());
-    ADLGameMode* GameMode = GameState->GetWorld()->GetAuthGameMode<ADLGameMode>();
+    // collect some context
+    FDLActorContainerConfiguratorContext Context(GameState);
 
     Builder.RegisterType<UDLInjectorProvider>().As<IInjectorProvider>().SingleInstance(true);
     Builder.RegisterType<UDLTimerServiceImpl>().As<IDLTimerService>().SingleInstance();
 
+    // Register InstanceFactory for components
+    Builder.RegisterDefault<UDLComponentInstanceFactory>().As<IInstanceFactory>();
+
     if (Context.HasServerLogic())
     {
+        ADLGameMode* GameMode = GameState->GetWorld()->GetAuthGameMode<ADLGameMode>();
+
         Builder.RegisterType<UDLRespawnServiceImpl>().As<IDLRespawnService>().SingleInstance(true);
         Builder.RegisterInstance(GameMode).As<IDLGameModeEventsService>();
     }

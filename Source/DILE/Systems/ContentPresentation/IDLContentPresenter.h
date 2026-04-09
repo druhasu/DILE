@@ -20,6 +20,7 @@ class DILE_API IDLContentPresenter
     GENERATED_BODY()
 
 public:
+    /* Helper method to set Content to given object if possible */
     static void SetContent(UObject* Presenter, const FDLViewContent& Content)
     {
         if (ensure(Presenter != nullptr) && Presenter->Implements<UDLContentPresenter>())
@@ -29,7 +30,7 @@ public:
     }
 
 protected:
-    /* Requests to display UStruct content. Returns whether content was actually displayed */
+    /* Requests to display UStruct content */
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent, meta = (DisplayName = "Set Content as Struct"))
     void K2_SetContent(const FDLViewContent& Content);
 

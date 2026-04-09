@@ -37,9 +37,12 @@ public:
     /* Called when selected Weapon slot changes */
     virtual FChangedSignature& OnSelectedSlotChanged() = 0;
 
-    /* */
+    /* Currently selected Weapon slot, or nullptr if not selected */
     const UDLEquipmentSlot* GetSelectedSlot() const
     {
-        return GetSlots()[GetSelectedSlotIndex()];
+        if (int32 Index = GetSelectedSlotIndex(); Index != INDEX_NONE)
+            return GetSlots()[Index];
+
+        return nullptr;
     }
 };

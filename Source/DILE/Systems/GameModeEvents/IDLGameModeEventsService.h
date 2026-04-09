@@ -21,8 +21,13 @@ public:
     using FPostLoginSignature = TMulticastDelegate<void(APlayerController* NewPlayer)>;
     using FLogoutSignature = TMulticastDelegate<void(AController* Exiting)>;
 
+    /* Called during user PreLogin stage */
     virtual FPreLoginSignature& OnPreLogin() = 0;
+
+    /* Called after user Login is completed */
     virtual FPostLoginSignature& OnPostLogin() = 0;
+
+    /* Called after user Logout is completed */
     virtual FLogoutSignature& OnLogout() = 0;
 };
 

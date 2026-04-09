@@ -7,6 +7,9 @@
 
 #include "DLItemType_Character.generated.h"
 
+/*
+ * Character Item type
+ */
 UCLASS()
 class DILE_API UDLItemType_Character : public UDLItemType
 {

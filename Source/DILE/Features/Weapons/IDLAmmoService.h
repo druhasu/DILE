@@ -32,7 +32,4 @@ public:
 
     /* Called when Ammo count changes */
     virtual FDLAmmoCountChangedSignature& OnAmmoCountChangedDynamic() = 0;
-
-    UFUNCTION(BlueprintCallable)
-    virtual void TestAmmoMethod(int32 SomeValue) {}
 };

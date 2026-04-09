@@ -24,7 +24,7 @@ public:
     using FItemCountSignature = TMulticastDelegate<void(const UDLItemType* ItemType, int32 OldCount, int32 NewCount)>;
 
     /* All item instances */
-    virtual TArrayView<TObjectPtr<UDLItemInstance>> GetAllItems() const = 0;
+    virtual TConstStridedView<TObjectPtr<UDLItemInstance>> GetAllItems() const = 0;
 
     /* Creates and adds new item instance */
     virtual UDLItemInstance* CreateItem(const UDLItemType* ItemType) = 0;

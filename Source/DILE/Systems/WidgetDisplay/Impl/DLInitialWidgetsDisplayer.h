@@ -17,13 +17,18 @@ struct FDLInitialHUDWidget
     GENERATED_BODY()
 
 public:
+    /* Tag of the Slot to add Widget to */
     UPROPERTY(EditAnywhere, meta = (Categories = "WidgetSlot"))
     FGameplayTag Slot;
 
+    /* Class of the Widget to create and add */
     UPROPERTY(EditAnywhere)
     TSoftClassPtr<UDLUserWidget> Class;
 };
 
+/*
+ * Allows configuring which widgets should be added to slots at startup
+ */
 UCLASS(Blueprintable)
 class DILE_API UDLInitialWidgetDisplayer : public UObject, public IDLStartupListener
 {

@@ -1,6 +1,8 @@
 ﻿// Copyright Andrei Sudarikov. All Rights Reserved.
 
-#include "DLContainerConfigurationAsset.h"
+#include "DLFeatureConfigurationAsset.h"
+#include "Utils/DLEnsure.h"
+#include "Utils/DLValidationUtils.h"
 
 #include "DI/ObjectContainerBuilder.h"
 
@@ -22,8 +24,37 @@ void UDLFeatureConfigurationAsset::RegisterClassesForActor(FObjectContainerBuild
     }
 }
 
+#if WITH_EDITOR
+EDataValidationResult UDLFeatureConfigurationAsset::IsDataValid(FDataValidationContext& Context) const
+{
+    for (int32 Index = 0; Index < RequiredFeatures.Num(); ++Index)
+    {
+        DL_VALIDATE_DATA(RequiredFeatures[Index] != nullptr, "Invalid Required Feature reference at index {0}", Index);
+    }
+
+    int32 ClassIndex = 0;
+    for(const auto& Pair : Classes)
+    {
+        DL_VALIDATE_DATA(Pair.Key != nullptr, "Invalid Key in Classes at index {0}", ClassIndex);
+
+        for (int32 Index = 0; Index < Pair.Value.Entries.Num(); ++Index)
+        {
+            const FDLContainerConfigurationClassEntry& Entry = Pair.Value.Entries[Index];
+
+            DL_VALIDATE_DATA(Entry.ServiceClass != nullptr, "Invalid ServiceClass for actor '{0}' at index {1}", Pair.Key->GetName(), Index);
+        }
+
+        ++ClassIndex;
+    }
+
+    return DL_VALIDATION_RESULT();
+}
+#endif
+
 void UDLFeatureConfigurationAsset::RegisterEntry(FObjectContainerBuilder& Builder, const FDLActorContainerConfiguratorContext& Context, const FDLContainerConfigurationClassEntry& Entry) const
 {
+    DL_ENSURE_RETURN(Entry.ServiceClass != nullptr);
+
     if (!MatchesCondition(Context, Entry))
         return;
 
@@ -49,8 +80,7 @@ void UDLFeatureConfigurationAsset::RegisterEntry(FObjectContainerBuilder& Builde
     // register as all additional classes
     for (TSubclassOf<UObject> AdditionalClass : Entry.RegisterAs)
     {
-        // TODO: add compatibility check here
-        if(AdditionalClass != nullptr)
+        if (!ProhibitedClasses.Contains(AdditionalClass) && ensure(Entry.ServiceClass->IsChildOf(AdditionalClass)))
             Registration.As(AdditionalClass);
     }
 
@@ -78,13 +108,4 @@ bool UDLFeatureConfigurationAsset::MatchesCondition(const FDLActorContainerConfi
         return true;
 
     return Entry.Condition.Matches(Context.GetTags());
-}
-
-void UDLGameModeConfigurationAsset::RegisterClassesForActor(FObjectContainerBuilder& Builder, const FDLActorContainerConfiguratorContext& Context) const
-{
-    // TODO: flatten list of all features
-    for (const UDLFeatureConfigurationAsset* FeatureAsset : Features)
-    {
-        FeatureAsset->RegisterClassesForActor(Builder, Context);
-    }
 }

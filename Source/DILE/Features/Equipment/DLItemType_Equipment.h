@@ -7,6 +7,9 @@
 
 #include "DLItemType_Equipment.generated.h"
 
+/*
+ * Equipment Item type
+ */
 UCLASS(Abstract)
 class UDLItemType_Equipment : public UDLItemType
 {

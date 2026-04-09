@@ -7,7 +7,7 @@
 
 #include "GameplayTagContainer.h"
 
-#include "DLContainerConfigurationAsset.generated.h"
+#include "DLFeatureConfigurationAsset.generated.h"
 
 class FObjectContainerBuilder;
 
@@ -68,29 +68,20 @@ class DILE_API UDLFeatureConfigurationAsset : public UDataAsset
 public:
     void RegisterClassesForActor(FObjectContainerBuilder& Builder, const FDLActorContainerConfiguratorContext& Context) const;
 
-protected:
+#if WITH_EDITOR
+    EDataValidationResult IsDataValid(FDataValidationContext& Context) const override;
+#endif
+
+public:
     /* Base asset for this. All its classes will be inherited */
     UPROPERTY(EditAnywhere)
     TArray<TObjectPtr<UDLFeatureConfigurationAsset>> RequiredFeatures;
 
     /* Classes to create in a Container. UObject classes are supported in every container, also ActorComponents are supported in Pawns */
-    UPROPERTY(EditAnywhere, meta = (AllowedClasses = ""))
+    UPROPERTY(EditAnywhere, meta = (AllowedClasses = "/Engine.Actor"))
     TMap<TObjectPtr<UClass>, FDLContainerConfigurationClassesList> Classes;
 
 private:
     void RegisterEntry(FObjectContainerBuilder& Builder, const FDLActorContainerConfiguratorContext& Context, const FDLContainerConfigurationClassEntry& Entry) const;
     bool MatchesCondition(const FDLActorContainerConfiguratorContext& Context, const FDLContainerConfigurationClassEntry& Entry) const;
-};
-
-UCLASS()
-class DILE_API UDLGameModeConfigurationAsset : public UPrimaryDataAsset
-{
-    GENERATED_BODY()
-
-public:
-    void RegisterClassesForActor(FObjectContainerBuilder& Builder, const FDLActorContainerConfiguratorContext& Context) const;
-
-protected:
-    UPROPERTY(EditAnywhere)
-    TArray<TObjectPtr<UDLFeatureConfigurationAsset>> Features;
 };

@@ -9,6 +9,9 @@
 
 class UDLUserWidget;
 
+/*
+ * Slot that can contain only one Widget at a time
+ */
 UCLASS()
 class DILE_API UDLSingleWidgetSlot : public UWidget, public IDLWidgetSlot
 {

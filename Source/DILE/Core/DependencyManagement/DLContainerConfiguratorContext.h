@@ -19,7 +19,7 @@ public:
     /* Whether game has Client logic */
     bool HasClientLogic() const;
 
-    const FGameplayTagContainer GetTags() const { return ContextTags; }
+    const FGameplayTagContainer& GetTags() const { return ContextTags; }
 
 protected:
     UWorld* World;
