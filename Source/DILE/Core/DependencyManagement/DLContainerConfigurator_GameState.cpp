@@ -8,6 +8,7 @@
 #include "Core/DLGameMode.h"
 #include "Features/Respawn/Impl/DLRespawnServiceImpl.h"
 #include "Systems/GameModeEvents/IDLGameModeEventsService.h"
+#include "Systems/NetMode/Impl/DLNetModeServiceImpl.h"
 #include "Systems/Timers/Impl/DLTimerServiceImpl.h"
 
 #include "DI/ObjectContainerBuilder.h"
@@ -21,6 +22,7 @@ void FDLContainerConfigurator_GameState::Configure(FObjectContainerBuilder& Buil
     FDLActorContainerConfiguratorContext Context(GameState);
 
     Builder.RegisterType<UDLInjectorProvider>().As<IInjectorProvider>().SingleInstance(true);
+    Builder.RegisterType<UDLNetModeServiceImpl>().As<IDLNetModeService>().SingleInstance();
     Builder.RegisterType<UDLTimerServiceImpl>().As<IDLTimerService>().SingleInstance();
 
     // Register InstanceFactory for components

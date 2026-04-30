@@ -3,7 +3,7 @@
 #pragma once
 
 #define DL_ENSURE_RETURN(Condition, ...) \
-    if (!ensureAlways(Condition)) \
+    if (!ensure(Condition)) \
     { \
         return __VA_ARGS__; \
     }

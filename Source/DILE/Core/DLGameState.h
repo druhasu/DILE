@@ -38,7 +38,7 @@ private:
     bool IsReadyForBeginPlay() const;
 
 private:
-    UPROPERTY()
+    UPROPERTY(VisibleInstanceOnly)
     TObjectPtr<UDLContainerComponent> ContainerComponent;
 
     FTimerHandle BeginPlayTimer;

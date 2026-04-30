@@ -138,7 +138,7 @@ void UDLInventoryServiceImpl::AddItemInternal(UDLItemInstance* Item)
 
     Item->NotifyAddedToInventory(this);
 
-    SubObjectReplicationService->AddSubObject(Item, COND_OwnerOnly);
+    SubObjectReplicationService->AddSubObject(Item, COND_None);
 
     FDLItemInstancesCollectionEntry& NewEntry = ItemInstances.Entries.Emplace_GetRef(Item);
     ItemInstances.MarkItemDirty(NewEntry);

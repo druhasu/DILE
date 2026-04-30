@@ -18,6 +18,10 @@ UObject* UDLComponentInstanceFactory::Create(UObject* Outer, UClass* EffectiveCl
     // set CreationMethod to make component visible in Details panel during PIE
     Result->CreationMethod = EComponentCreationMethod::Instance;
 
+    // if component is created on both server and client this links them together
+    // without this line client will always create new instance of component
+    Result->SetNetAddressable();
+
     return Result;
 }
 

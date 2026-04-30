@@ -10,17 +10,36 @@ void UDLAimingServiceImpl::InitDependencies(TScriptInterface<IDLPlayerPawnServic
 
 FVector UDLAimingServiceImpl::GetAimPoint() const
 {
-    if (CachedAimPoint.IsSet())
-        return CachedAimPoint.GetValue();
+    if (!CachedAimPoint.IsSet())
+        UpdateAimInfo();
 
+    return CachedAimPoint.GetValue();
+}
+
+FVector UDLAimingServiceImpl::GetAimDirection() const
+{
+    if (!CachedAimDirection.IsSet())
+        UpdateAimInfo();
+
+    return CachedAimDirection.GetValue();
+}
+
+void UDLAimingServiceImpl::UpdateAimInfo() const
+{
     APawn* Pawn = PawnService->GetPawn();
     if (Pawn == nullptr)
-        return FVector::ZeroVector;
+    {
+        CachedAimPoint = FVector::ZeroVector;
+        CachedAimDirection = FVector::ForwardVector;
+        return;
+    }
 
     FMinimalViewInfo ViewInfo;
     Pawn->CalcCamera(0.0f, ViewInfo);
 
-    FVector TraceEnd = ViewInfo.Location + ViewInfo.Rotation.RotateVector(FVector::ForwardVector * TraceDistance);
+    CachedAimDirection = ViewInfo.Rotation.RotateVector(FVector::ForwardVector);
+
+    FVector TraceEnd = ViewInfo.Location + CachedAimDirection.GetValue() * TraceDistance;
 
     FHitResult Hit;
     FCollisionQueryParams Params;
@@ -30,6 +49,4 @@ FVector UDLAimingServiceImpl::GetAimPoint() const
 
     FVector Result = Hit.bBlockingHit ? Hit.ImpactPoint : TraceEnd;
     CachedAimPoint = Result;
-
-    return Result;
 }

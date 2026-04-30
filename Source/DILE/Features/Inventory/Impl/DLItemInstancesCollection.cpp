@@ -3,10 +3,16 @@
 #include "DLItemInstancesCollection.h"
 #include "DLInventoryServiceImpl.h"
 #include "Features/Inventory/DLItemInstance.h"
+#include "Utils/DLLog.h"
 
 FString FDLItemInstancesCollectionEntry::GetDebugString()
 {
     return ItemInstance != nullptr ? ItemInstance->GetClass()->GetName() : TEXT("<None>");
+}
+
+bool FDLItemInstancesCollection::NetDeltaSerialize(FNetDeltaSerializeInfo& DeltaParms)
+{
+    return FastArrayDeltaSerialize<FDLItemInstancesCollectionEntry, FDLItemInstancesCollection>(Entries, DeltaParms, *this);
 }
 
 void FDLItemInstancesCollection::PreReplicatedRemove(const TArrayView<int32> RemovedIndices, int32 FinalSize)
@@ -16,7 +22,10 @@ void FDLItemInstancesCollection::PreReplicatedRemove(const TArrayView<int32> Rem
         UDLItemInstance* Instance = Entries[Index].ItemInstance;
 
         if (Instance != nullptr)
+        {
             Inventory->ItemRemovedDelegate.Broadcast(Instance);
+            DL_LOG(Verbose, TEXT("ItemInstance '%s' removed"), *Instance->GetName());
+        }
     }
 }
 
@@ -27,7 +36,10 @@ void FDLItemInstancesCollection::PostReplicatedAdd(const TArrayView<int32> Added
         UDLItemInstance* Instance = Entries[Index].ItemInstance;
 
         if (Instance != nullptr)
+        {
             Inventory->ItemAddedDelegate.Broadcast(Instance);
+            DL_LOG(Verbose, TEXT("ItemInstance '%s' added"), *Instance->GetName());
+        }
     }
 }
 
@@ -39,10 +51,16 @@ void FDLItemInstancesCollection::PostReplicatedChange(const TArrayView<int32> Ch
         TObjectPtr<UDLItemInstance>& PrevInstance = Entries[Index].PrevItemInstance;
 
         if (PrevInstance != nullptr)
+        {
             Inventory->ItemRemovedDelegate.Broadcast(PrevInstance);
+            DL_LOG(Verbose, TEXT("ItemInstance '%s' removed"), *PrevInstance->GetName());
+        }
 
         if (Instance != nullptr)
+        {
             Inventory->ItemAddedDelegate.Broadcast(Instance);
+            DL_LOG(Verbose, TEXT("ItemInstance '%s' added"), *Instance->GetName());
+        }
 
         PrevInstance = Instance;
     }

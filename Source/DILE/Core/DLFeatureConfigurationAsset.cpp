@@ -2,6 +2,7 @@
 
 #include "DLFeatureConfigurationAsset.h"
 #include "Utils/DLEnsure.h"
+#include "Utils/DLLog.h"
 #include "Utils/DLValidationUtils.h"
 
 #include "DI/ObjectContainerBuilder.h"
@@ -59,6 +60,7 @@ void UDLFeatureConfigurationAsset::RegisterEntry(FObjectContainerBuilder& Builde
         return;
 
     auto& Registration = Builder.RegisterType(Entry.ServiceClass);
+    DL_LOG(Verbose, TEXT("Registered class '%s'"), *GetNameSafe(Entry.ServiceClass.Get()));
 
     // register all implemented interfaces
     Registration.ByInterfaces(EInterfaceSearchOptions::CurrentAndSuper);

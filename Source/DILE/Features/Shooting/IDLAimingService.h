@@ -20,4 +20,8 @@ public:
     /* World space location of a point under the reticle */
     UFUNCTION(BlueprintCallable)
     virtual FVector GetAimPoint() const = 0;
+
+    /* World space Aiming direction */
+    UFUNCTION(BlueprintCallable)
+    virtual FVector GetAimDirection() const = 0;
 };

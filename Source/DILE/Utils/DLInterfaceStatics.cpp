@@ -1,11 +1,15 @@
 ﻿// Copyright Andrei Sudarikov. All Rights Reserved.
 
 #include "DLInterfaceStatics.h"
+#include "Utils/DLEnsure.h"
 
 #include "DI/IResolver.h"
 
 UObject* UDLInterfaceStatics::FindImplementingObject(UObject* Target, UClass* InterfaceClass)
 {
+    DL_ENSURE_RETURN(Target != nullptr, nullptr);
+    DL_ENSURE_RETURN(InterfaceClass != nullptr, nullptr);
+
     if (Target->GetClass()->ImplementsInterface(InterfaceClass))
     {
         return Target;

@@ -92,6 +92,7 @@ void UDLWeaponViewComponent::AttachWeapon(UDLItemInstance_Weapon* NewWeapon)
     DL_ENSURE_RETURN(NewWeaponActor != nullptr);
 
     USkeletalMeshComponent* AttachComponent = SelectAttachComponent();
+
     NewWeaponActor->AttachToComponent(AttachComponent, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false), WeaponSocket);
     NewWeaponActor->ForEachComponent<UPrimitiveComponent>(false, [&](UPrimitiveComponent* Component)
     {
@@ -99,10 +100,12 @@ void UDLWeaponViewComponent::AttachWeapon(UDLItemInstance_Weapon* NewWeapon)
     });
 
     CurrentAnimLayers = WeaponGripLayers.FindRef(ViewFragment->WeaponGrip);
-    FirstPersonMesh->LinkAnimClassLayers(CurrentAnimLayers.FirstPersonLayers);
     ThirdPersonMesh->LinkAnimClassLayers(CurrentAnimLayers.ThirdPersonLayers);
+    if (AttachComponent == FirstPersonMesh)
+        FirstPersonMesh->LinkAnimClassLayers(CurrentAnimLayers.FirstPersonLayers);
 
     WeaponActor = NewWeaponActor;
+    MuzzleSocketName = ViewFragment->MuzzleSocketName;
 }
 
 void UDLWeaponViewComponent::DetachWeapon()
@@ -119,6 +122,7 @@ void UDLWeaponViewComponent::DetachWeapon()
 
     WeaponActor = nullptr;
     CurrentAnimLayers = {};
+    MuzzleSocketName = {};
 }
 
 USkeletalMeshComponent* UDLWeaponViewComponent::SelectAttachComponent()

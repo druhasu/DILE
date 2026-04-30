@@ -32,6 +32,9 @@ public:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (Categories = "WeaponGrip"))
     FGameplayTag WeaponGrip;
+
+    UPROPERTY(EditDefaultsOnly)
+    FName MuzzleSocketName;
 };
 
 /*
@@ -65,6 +68,10 @@ public:
     );
 
     void EndPlay(EEndPlayReason::Type InReason) override;
+
+    AActor* GetWeaponActor() const { return WeaponActor.Get(); }
+
+    FName GetMuzzleSocketName() const { return MuzzleSocketName; }
 
 protected:
     UPROPERTY(EditDefaultsOnly)
@@ -106,4 +113,6 @@ private:
 
     TWeakObjectPtr<AActor> WeaponActor;
     FDLWeaponGripAnimSet CurrentAnimLayers;
+
+    FName MuzzleSocketName;
 };

@@ -7,11 +7,13 @@
 #include "Systems/ServiceReplication/IDLSubObjectReplicationService.h"
 
 #include "DI/IResolver.h"
+#include "Interfaces/Interface_ActorSubobject.h"
 
 #include "DLContainerComponent.generated.h"
 
 class UObjectContainer;
 class FObjectContainerBuilder;
+class UDLContainerComponentInitHelper;
 
 UCLASS()
 class UDLContainerComponent : public UActorComponent, public IResolver, public IDLSubObjectReplicationService
@@ -37,7 +39,6 @@ public:
     void RemoveSubObject(UObject* SubObject) override;
     // End IDLSubObjectReplicationService
 
-    void PreNetReceive() override;
     void BeginPlay() override;
     void EndPlay(EEndPlayReason::Type InReason) override;
 
@@ -60,6 +61,16 @@ private:
     UPROPERTY()
     FDLStartupShutdownHelper StartupShutdownHelper;
 
-    UPROPERTY(Replicated)
-    bool bContainerCreated = false;
+    UPROPERTY()
+    TObjectPtr<UDLContainerComponentInitHelper> InitHelper;
+};
+
+UCLASS()
+class UDLContainerComponentInitHelper : public UObject, public IInterface_ActorSubobject
+{
+    GENERATED_BODY()
+
+public:
+    bool IsSupportedForNetworking() const override { return true; }
+    void OnCreatedFromReplication() override;
 };

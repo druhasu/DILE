@@ -51,7 +51,7 @@ private:
     void OnPawnChanged(APlayerState* Player, APawn* NewPawn, APawn* OldPawn);
 
 private:
-    UPROPERTY()
+    UPROPERTY(VisibleInstanceOnly)
     TObjectPtr<UDLContainerComponent> ContainerComponent;
 
     FPawnChangedSignature PawnChangedDelegate;

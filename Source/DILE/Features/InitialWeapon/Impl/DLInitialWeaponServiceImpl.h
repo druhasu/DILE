@@ -25,6 +25,8 @@ public:
         TScriptInterface<IDLWeaponSlotsService> InWeaponSlotsService
     );
 
+    ELifetimeCondition GetReplicationCondition() const override { return ELifetimeCondition::COND_OwnerOnly; }
+
     // Begin IDLInitialWeaponService
     TDLAssetId<UDLItemType_Weapon> GetInitialWeapon() const override { return InitialWeapon; }
     void SetInitialWeapon(const TDLAssetId<UDLItemType_Weapon>& InWeapon) override;

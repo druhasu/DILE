@@ -20,6 +20,8 @@ public:
         TScriptInterface<IDLCharacterCatalogService> InCharacterCatalogue
     );
 
+    ELifetimeCondition GetReplicationCondition() const override { return ELifetimeCondition::COND_OwnerOnly; }
+
     // Begin IDLCharacterSelectionService
     TDLAssetId<UDLItemType_Character> GetSelectedCharacter() override { return SelectedCharacter; }
     void SetSelectedCharacter(TDLAssetId<UDLItemType_Character> AssetId) override;

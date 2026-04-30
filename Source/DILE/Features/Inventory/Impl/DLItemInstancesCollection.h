@@ -34,10 +34,7 @@ struct FDLItemInstancesCollection : public FFastArraySerializer
     GENERATED_BODY()
 
 public:
-    bool NetDeltaSerialize(FNetDeltaSerializeInfo& DeltaParms)
-    {
-        return FastArrayDeltaSerialize<FDLItemInstancesCollectionEntry, FDLItemInstancesCollection>(Entries, DeltaParms, *this);
-    }
+    bool NetDeltaSerialize(FNetDeltaSerializeInfo& DeltaParms);
 
     void PreReplicatedRemove(const TArrayView<int32> RemovedIndices, int32 FinalSize);
     void PostReplicatedAdd(const TArrayView<int32> AddedIndices, int32 FinalSize);

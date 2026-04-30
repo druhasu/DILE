@@ -12,21 +12,13 @@
 #include "DI/ObjectContainer.h"
 #include "DI/ObjectContainerBuilder.h"
 #include "DI/ObjectContainerIterator.h"
-#include "Net/Core/PushModel/PushModel.h"
-#include "Net/UnrealNetwork.h"
 
 UDLContainerComponent::UDLContainerComponent()
 {
     SetIsReplicatedByDefault(true);
+    PrimaryComponentTick.bCanEverTick = false;
 
     bReplicateUsingRegisteredSubObjectList = true;
-}
-
-void UDLContainerComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-    DOREPLIFETIME(ThisClass, bContainerCreated);
 }
 
 UObject* UDLContainerComponent::Resolve(UClass* Type) const
@@ -76,17 +68,6 @@ void UDLContainerComponent::RemoveSubObject(UObject* SubObject)
     GetOwner()->ForceNetUpdate();
 }
 
-void UDLContainerComponent::PreNetReceive()
-{
-    // create Container on Clients before applying any received data
-    if (Container == nullptr)
-    {
-        CreateContainer();
-    }
-
-    Super::PreNetReceive();
-}
-
 void UDLContainerComponent::BeginPlay()
 {
     Super::BeginPlay();
@@ -104,6 +85,9 @@ void UDLContainerComponent::EndPlay(EEndPlayReason::Type InReason)
     {
         RemoveReplicatedSubObject(Service);
     }
+
+    if (InitHelper != nullptr)
+        GetOwner()->RemoveReplicatedSubObject(InitHelper);
 
     StartupShutdownHelper.Shutdown();
 
@@ -139,6 +123,19 @@ void UDLContainerComponent::CreateContainer()
     UObjectContainer* ParentContainer = GetParentContainerDelegate.Execute();
     DL_ENSURE_RETURN(ParentContainer != nullptr);
 
+    // if we are a Server instance, create InitHelper and add it to replication
+    // we need this for proper initialization of Container on clients
+    ENetMode NetMode = World->GetNetMode();
+    if (NetMode == NM_ListenServer || NetMode == NM_DedicatedServer)
+    {
+        InitHelper = NewObject<UDLContainerComponentInitHelper>(GetOwner());
+
+        // add to Owner's SubObject list, not to ours
+        // Actor SubObjects are always replicated before the SubObjects of its components
+        // we use this rule to make sure Container on clients is created before replicated services are processed
+        GetOwner()->AddReplicatedSubObject(InitHelper, COND_InitialOnly);
+    }
+
     FObjectContainerBuilder Builder;
 
     FDLActorContainerConfiguratorContext Context(GetOwner());
@@ -156,14 +153,27 @@ void UDLContainerComponent::CreateContainer()
     // Remember which components existed before container creation
     TSet<UActorComponent*, DefaultKeyFuncs<UActorComponent*>, TInlineSetAllocator<16>> InitialComponents(GetOwner()->GetComponents());
 
+    // remove itself from further processing
+    InitialComponents.Remove(this);
+
+    // register initial components by interfaces
+    for (UActorComponent* Component : InitialComponents)
+    {
+        if (Component->GetClass()->Interfaces.Num() > 0)
+        {
+            Builder.RegisterInstance(Component).ByInterfaces();
+        }
+    }
+
     Container = Builder.BuildNested(*ParentContainer);
-    ContainerCreatedDelegate.ExecuteIfBound(Container);
 
     // Inject dependencies into initial components
     for (UActorComponent* Component : InitialComponents)
     {
         Container->Inject(Component);
     }
+
+    ContainerCreatedDelegate.ExecuteIfBound(Container);
 
     // Collect and process all replicated services
     for (auto It = Container->CreateIterator<IDLReplicatedService>(); It; ++It)
@@ -180,11 +190,18 @@ void UDLContainerComponent::CreateContainer()
         StartupShutdownHelper.Startup(Container);
     }
 
-    // change the property to force replication of this component
-    // otherwise we will not receive PreNetReceive callback on Client and container will not be created
-    MARK_PROPERTY_DIRTY_FROM_NAME(ThisClass, bContainerCreated, this);
-    bContainerCreated = true;
-
     // It may be useful to see in logs when container was created
     DL_LOG(Log, TEXT("ObjectContainer created for %s"), *GetOwner()->GetName());
+}
+
+void UDLContainerComponentInitHelper::OnCreatedFromReplication()
+{
+    AActor* Actor = GetTypedOuter<AActor>();
+    DL_ENSURE_RETURN(Actor != nullptr);
+
+    UDLContainerComponent* ContainerComponent = Actor->FindComponentByClass<UDLContainerComponent>();
+    DL_ENSURE_RETURN(ContainerComponent != nullptr);
+    DL_ENSURE_RETURN(ContainerComponent->GetContainer() == nullptr);
+
+    ContainerComponent->CreateContainer();
 }
