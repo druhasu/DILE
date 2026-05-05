@@ -6,7 +6,6 @@
 #include "DLComponentInstanceFactory.h"
 #include "Core/DLGameState.h"
 #include "Core/DLGameMode.h"
-#include "Features/Respawn/Impl/DLRespawnServiceImpl.h"
 #include "Systems/GameModeEvents/IDLGameModeEventsService.h"
 #include "Systems/NetMode/Impl/DLNetModeServiceImpl.h"
 #include "Systems/Timers/Impl/DLTimerServiceImpl.h"
@@ -31,8 +30,6 @@ void FDLContainerConfigurator_GameState::Configure(FObjectContainerBuilder& Buil
     if (Context.HasServerLogic())
     {
         ADLGameMode* GameMode = GameState->GetWorld()->GetAuthGameMode<ADLGameMode>();
-
-        Builder.RegisterType<UDLRespawnServiceImpl>().As<IDLRespawnService>().SingleInstance(true);
         Builder.RegisterInstance(GameMode).As<IDLGameModeEventsService>();
     }
 }
